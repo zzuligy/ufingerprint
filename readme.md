@@ -8,7 +8,7 @@ Use this package to easily get a unique device fingerprint
 
 <!-- prettier-ignore -->
 ```js
-import {getFingerprint} from 'bfingerprint'
+import {getFingerprint} from 'ufingerprint'
 const fingerPrint = getFingerprint()
 ```
 

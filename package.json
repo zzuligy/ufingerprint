@@ -1,8 +1,11 @@
 {
-  "name": "bfingerprint",
+  "name": "ufingerprint",
   "version": "1.0.0",
   "description": "help you easily get unique  device fingerprint ",
-  "repository": "/bfingerprint",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:zzuligy/ufingerprint.git"
+  },
   "main": "./dist/index.cjs",
   "type": "module",
   "exports": {
@@ -19,6 +22,7 @@
   "files": [
     "dist"
   ],
+  "author": "guo yangyang <zzuligy@gmail.com>",
   "scripts": {
     "test": "npm run test-nodejs && npm run test-edge",
     "test-nodejs": "jest --env node",
