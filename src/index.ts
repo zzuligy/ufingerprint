@@ -1,4 +1,3 @@
-/* eslint-disable  */
 /**
  *
  * get the unique fingerprint by webgl identifier(if webgl is disable,the unique will according the hardware)
