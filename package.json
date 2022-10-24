@@ -1,6 +1,6 @@
 {
   "name": "ufingerprint",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "help you easily get unique  device fingerprint ",
   "repository": {
     "type": "git",
@@ -32,8 +32,8 @@
     "eslint-check": "eslint --max-warnings=0 .",
     "prettier-check": "prettier --check .",
     "type-check": "tsc --noEmit",
-    "precommit": "lint-staged",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "demo": "npm run build &npx serve ./example& open http://localhost:3000/example"
   },
   "jest": {
     "preset": "ts-jest",

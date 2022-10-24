@@ -1,20 +1,26 @@
+/* eslint-disable  */
 /**
  *
- * get the unique fingerprint by webgl identifier
+ * get the unique fingerprint by webgl identifier(if webgl is disable,the unique will according the hardware)
  *
- * chrome Incognito mode and standard mode,different browser(chrome,safari) will return the same fingerprint.
+ * chrome Incognito mode and standard mode,different browser(chrome,safari) will return the same fingerprint(when webgl is enable).
  * @param debug - whether enable debug mode(in debug mode the canvas will show on the screen)
  * @returns unique fingerprint
  */
 export const getFingerprint = (debug = false) => {
-  const result = getWebglID(debug);
-  return result;
+  const webglId = getWebglID(debug);
+  if (!webglId) {
+    return `d${getDeviceId(debug)}`;
+  }
+  return `${webglId}`;
 };
 
 export const getWebglID = (debug: boolean) => {
   try {
     const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('webgl');
+    const ctx: WebGLRenderingContext = canvas.getContext(
+      'webgl',
+    ) as WebGLRenderingContext;
     canvas.width = 256;
     canvas.height = 128;
 
@@ -22,7 +28,7 @@ export const getWebglID = (debug: boolean) => {
       'attribute vec2 attrVertex;varying vec2 varyinTexCoordinate;uniform vec2 uniformOffset;void main(){varyinTexCoordinate=attrVertex+uniformOffset;gl_Position=vec4(attrVertex,0,1);}';
     const g =
       'precision mediump float;varying vec2 varyinTexCoordinate;void main() {gl_FragColor=vec4(varyinTexCoordinate,0,1);}';
-    const h = ctx.createBuffer();
+    const h = ctx.createBuffer() as WebGLBuffer;
 
     ctx.bindBuffer(ctx.ARRAY_BUFFER, h);
 
@@ -32,13 +38,13 @@ export const getWebglID = (debug: boolean) => {
     h.itemSize = 3;
     h.numItems = 3;
 
-    const j = ctx.createProgram();
-    const k = ctx.createShader(ctx.VERTEX_SHADER);
+    const j = ctx.createProgram() as WebGLProgram;
+    const k = ctx.createShader(ctx.VERTEX_SHADER) as WebGLShader;
 
     ctx.shaderSource(k, f);
     ctx.compileShader(k);
 
-    const l = ctx.createShader(ctx.FRAGMENT_SHADER);
+    const l = ctx.createShader(ctx.FRAGMENT_SHADER) as WebGLShader;
 
     ctx.shaderSource(l, g);
     ctx.compileShader(l);
@@ -83,7 +89,70 @@ export const getWebglID = (debug: boolean) => {
   }
 };
 
-export const murmurhash332gc = (key) => {
+export const getDeviceId = (debug: boolean) => {
+  const {
+    appName,
+    appCodeName,
+    appVersion,
+    cookieEnabled,
+    deviceMemory,
+    doNotTrack,
+    hardwareConcurrency,
+    language,
+    languages,
+    maxTouchPoints,
+    platform,
+    product,
+    productSub,
+    userAgent,
+    vendor,
+    vendorSub,
+  } = window.navigator;
+
+  const { width, height, colorDepth, pixelDepth } = window.screen;
+  const timezoneOffset = new Date().getTimezoneOffset();
+  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const touchSupport = 'ontouchstart' in window;
+
+  const data = JSON.stringify({
+    appCodeName,
+    appName,
+    appVersion,
+    colorDepth,
+    cookieEnabled,
+    deviceMemory,
+    devicePixelRatio,
+    doNotTrack,
+    hardwareConcurrency,
+    height,
+    language,
+    languages,
+    maxTouchPoints,
+    pixelDepth,
+    platform,
+    product,
+    productSub,
+    timezone,
+    timezoneOffset,
+    touchSupport,
+    userAgent,
+    vendor,
+    vendorSub,
+    width,
+  });
+
+  const datastring = JSON.stringify(data, null, 4);
+
+  if (debug) {
+    // eslint-disable-next-line no-console
+    console.log('fingerprint data', datastring);
+  }
+
+  const result = murmurhash332gc(datastring);
+  return result;
+};
+
+const murmurhash332gc = (key: string) => {
   const remainder = key.length & 3; // key.length % 4
   const bytes = key.length - remainder;
   const c1 = 0xcc9e2d51;

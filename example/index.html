@@ -1,0 +1,17 @@
+<html>
+  <head>
+    <script type="module">
+      import { getFingerprint } from '../dist/index.mjs';
+      const fingerPrint = getFingerprint();
+      console.log(`your browser fingerPrint is:${fingerPrint}`);
+
+      document.querySelector('#root').innerHTML = fingerPrint;
+    </script>
+  </head>
+  <body>
+    <div>
+      <span>fingerprint:</span>
+      <span id="root" style="color: red"></span>
+    </div>
+  </body>
+</html>
